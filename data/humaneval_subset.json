@@ -1,0 +1,802 @@
+[
+  {
+    "task_id": "HE_001",
+    "bug_category": "off_by_one",
+    "prompt": "def has_close_elements(numbers, threshold):\n    for i in range(len(numbers)):\n        for j in range(i+1, len(numbers)+1):\n            if abs(numbers[i] - numbers[j]) < threshold:\n                return True\n    return False",
+    "canonical_solution": "def has_close_elements(numbers, threshold):\n    for i in range(len(numbers)):\n        for j in range(i+1, len(numbers)):\n            if abs(numbers[i] - numbers[j]) < threshold:\n                return True\n    return False",
+    "test": "assert has_close_elements([1.0,2.0,3.9,4.0,5.0,2.2],0.3)==True\nassert has_close_elements([1.0,2.0,3.9,4.0,5.0,2.2],0.05)==False",
+    "description": "Loop upper bound exceeds list length by 1",
+    "function_length": 6,
+    "complexity": 3
+  },
+  {
+    "task_id": "HE_002",
+    "bug_category": "off_by_one",
+    "prompt": "def intersperse(numbers, delimeter):\n    result = []\n    for i in range(len(numbers)-1):\n        result.append(numbers[i])\n        result.append(delimeter)\n    return result",
+    "canonical_solution": "def intersperse(numbers, delimeter):\n    result = []\n    for i in range(len(numbers)-1):\n        result.append(numbers[i])\n        result.append(delimeter)\n    result.append(numbers[-1])\n    return result",
+    "test": "assert intersperse([1,2,3],4)==[1,4,2,4,3]",
+    "description": "Last element not appended after loop",
+    "function_length": 5,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_003",
+    "bug_category": "off_by_one",
+    "prompt": "def mean_absolute_deviation(numbers):\n    mean = sum(numbers)/len(numbers)\n    return sum(abs(x-mean) for x in numbers)/(len(numbers)-1)",
+    "canonical_solution": "def mean_absolute_deviation(numbers):\n    mean = sum(numbers)/len(numbers)\n    return sum(abs(x-mean) for x in numbers)/len(numbers)",
+    "test": "assert abs(mean_absolute_deviation([1.0,2.0,3.0,4.0])-1.0)<1e-6",
+    "description": "Division by n-1 instead of n",
+    "function_length": 3,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_004",
+    "bug_category": "off_by_one",
+    "prompt": "def sum_product(numbers):\n    sum_value=0\n    prod_value=0\n    for n in numbers:\n        sum_value+=n\n        prod_value*=n\n    return (sum_value,prod_value)",
+    "canonical_solution": "def sum_product(numbers):\n    sum_value=0\n    prod_value=1\n    for n in numbers:\n        sum_value+=n\n        prod_value*=n\n    return (sum_value,prod_value)",
+    "test": "assert sum_product([1,2,3,4])==(10,24)",
+    "description": "Product initialised to 0 instead of 1",
+    "function_length": 6,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_005",
+    "bug_category": "off_by_one",
+    "prompt": "def all_prefixes(string):\n    result=[]\n    for i in range(len(string)):\n        result.append(string[:i])\n    return result",
+    "canonical_solution": "def all_prefixes(string):\n    result=[]\n    for i in range(len(string)+1):\n        result.append(string[:i])\n    return result",
+    "test": "assert all_prefixes('abc')==['','a','ab','abc']",
+    "description": "Range misses final full-string prefix",
+    "function_length": 4,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_006",
+    "bug_category": "off_by_one",
+    "prompt": "def string_sequence(n):\n    return ' '.join([str(i) for i in range(n)])",
+    "canonical_solution": "def string_sequence(n):\n    return ' '.join([str(i) for i in range(n+1)])",
+    "test": "assert string_sequence(0)=='0'\nassert string_sequence(5)=='0 1 2 3 4 5'",
+    "description": "Range stops at n-1 instead of n",
+    "function_length": 2,
+    "complexity": 1
+  },
+  {
+    "task_id": "HE_007",
+    "bug_category": "off_by_one",
+    "prompt": "def how_many_times(string, substring):\n    times=0\n    for i in range(len(string)-len(substring)):\n        if string[i:i+len(substring)]==substring:\n            times+=1\n    return times",
+    "canonical_solution": "def how_many_times(string, substring):\n    times=0\n    for i in range(len(string)-len(substring)+1):\n        if string[i:i+len(substring)]==substring:\n            times+=1\n    return times",
+    "test": "assert how_many_times('','x')==0\nassert how_many_times('aaa','a')==3\nassert how_many_times('aaaa','aa')==3",
+    "description": "Range off by one -- misses last valid window",
+    "function_length": 5,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_008",
+    "bug_category": "off_by_one",
+    "prompt": "def rolling_max(numbers):\n    running_max=None\n    result=[]\n    for n in numbers:\n        if running_max is None or running_max<n:\n            running_max=n\n        result.append(running_max)\n    return result",
+    "canonical_solution": "def rolling_max(numbers):\n    running_max=None\n    result=[]\n    for n in numbers:\n        if running_max is None or running_max<n:\n            running_max=n\n        result.append(running_max)\n    return result",
+    "test": "assert rolling_max([1,2,3,2,3,4,2])==[1,2,3,3,3,4,4]",
+    "description": "Correct rolling max (control)",
+    "function_length": 7,
+    "complexity": 3
+  },
+  {
+    "task_id": "HE_009",
+    "bug_category": "off_by_one",
+    "prompt": "def below_zero(operations):\n    balance=0\n    for op in operations:\n        balance+=op\n        if balance<=0:\n            return True\n    return False",
+    "canonical_solution": "def below_zero(operations):\n    balance=0\n    for op in operations:\n        balance+=op\n        if balance<0:\n            return True\n    return False",
+    "test": "assert below_zero([1,2,3])==False\nassert below_zero([1,2,-4,5])==True",
+    "description": "<= instead of < catches zero balance as negative",
+    "function_length": 6,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_010",
+    "bug_category": "off_by_one",
+    "prompt": "def modp(n, p):\n    ret=0\n    for i in range(n):\n        ret=(2*ret)%p\n    return ret",
+    "canonical_solution": "def modp(n, p):\n    ret=1\n    for i in range(n):\n        ret=(2*ret)%p\n    return ret",
+    "test": "assert modp(3,5)==3\nassert modp(10,1000000007)==1024",
+    "description": "Initial value 0 instead of 1 makes all results 0",
+    "function_length": 4,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_011",
+    "bug_category": "off_by_one",
+    "prompt": "def largest_divisor(n):\n    for i in reversed(range(2,n)):\n        if n%i==0:\n            return i",
+    "canonical_solution": "def largest_divisor(n):\n    for i in reversed(range(2,n)):\n        if n%i==0:\n            return i",
+    "test": "assert largest_divisor(15)==5",
+    "description": "Correct largest divisor scan (control)",
+    "function_length": 4,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_012",
+    "bug_category": "off_by_one",
+    "prompt": "def count_distinct_characters(string):\n    return len(set(string))",
+    "canonical_solution": "def count_distinct_characters(string):\n    return len(set(string.lower()))",
+    "test": "assert count_distinct_characters('')==0\nassert count_distinct_characters('xyzXYZ')==3",
+    "description": "Missing .lower() before set -- counts upper and lower separately",
+    "function_length": 2,
+    "complexity": 1
+  },
+  {
+    "task_id": "HE_013",
+    "bug_category": "off_by_one",
+    "prompt": "def fib(n):\n    if n==0: return 0\n    if n==1: return 1\n    return fib(n-1)+fib(n-2)",
+    "canonical_solution": "def fib(n):\n    if n==0: return 0\n    if n==1: return 1\n    return fib(n-1)+fib(n-2)",
+    "test": "assert fib(10)==55\nassert fib(1)==1",
+    "description": "Correct Fibonacci (control)",
+    "function_length": 4,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_014",
+    "bug_category": "off_by_one",
+    "prompt": "def greatest_common_divisor(a, b):\n    while b:\n        a,b=b,a%b\n    return a",
+    "canonical_solution": "def greatest_common_divisor(a, b):\n    while b:\n        a,b=b,a%b\n    return a",
+    "test": "assert greatest_common_divisor(3,5)==1\nassert greatest_common_divisor(25,15)==5",
+    "description": "Correct Euclidean GCD (control)",
+    "function_length": 3,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_015",
+    "bug_category": "off_by_one",
+    "prompt": "def filter_by_prefix(strings, prefix):\n    return [x for x in strings if x.startswith(prefix)]",
+    "canonical_solution": "def filter_by_prefix(strings, prefix):\n    return [x for x in strings if x.startswith(prefix)]",
+    "test": "assert filter_by_prefix([],\"john\")==[]\nassert filter_by_prefix([\"xxx\",\"asd\",\"xxy\",\"xxxAAA\"],\"xxx\")==[\"xxx\",\"xxxAAA\"]",
+    "description": "Correct prefix filter (control)",
+    "function_length": 2,
+    "complexity": 1
+  },
+  {
+    "task_id": "HE_016",
+    "bug_category": "off_by_one",
+    "prompt": "def is_palindrome(text):\n    for i in range(len(text)):\n        if text[i]!=text[len(text)-1-i]:\n            return False\n    return True",
+    "canonical_solution": "def is_palindrome(text):\n    for i in range(len(text)):\n        if text[i]!=text[len(text)-1-i]:\n            return False\n    return True",
+    "test": "assert is_palindrome('')==True\nassert is_palindrome('aba')==True\nassert is_palindrome('zbcd')==False",
+    "description": "Correct palindrome check (control)",
+    "function_length": 5,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_017",
+    "bug_category": "off_by_one",
+    "prompt": "def remove_duplicates(numbers):\n    import collections\n    c=collections.Counter(numbers)\n    return [n for n in numbers if c[n]==1]",
+    "canonical_solution": "def remove_duplicates(numbers):\n    import collections\n    c=collections.Counter(numbers)\n    return [n for n in numbers if c[n]==1]",
+    "test": "assert remove_duplicates([1,2,3,2,4])==[1,3,4]",
+    "description": "Correct duplicate removal (control)",
+    "function_length": 4,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_018",
+    "bug_category": "off_by_one",
+    "prompt": "def unique(l):\n    return sorted(list(set(l)))",
+    "canonical_solution": "def unique(l):\n    return sorted(list(set(l)))",
+    "test": "assert unique([5,3,5,2,3,3,9,0,123])==[0,2,3,5,9,123]",
+    "description": "Correct unique sorted values (control)",
+    "function_length": 2,
+    "complexity": 1
+  },
+  {
+    "task_id": "HE_019",
+    "bug_category": "off_by_one",
+    "prompt": "def max_element(l):\n    m=l[0]\n    for e in l:\n        if e>m: m=e\n    return m",
+    "canonical_solution": "def max_element(l):\n    m=l[0]\n    for e in l:\n        if e>m: m=e\n    return m",
+    "test": "assert max_element([1,2,3])==3\nassert max_element([5,3,-5,2,-3,3,9,0,124,1,-10])==124",
+    "description": "Correct max scan (control)",
+    "function_length": 4,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_020",
+    "bug_category": "off_by_one",
+    "prompt": "def get_positive(l):\n    return [e for e in l if e>0]",
+    "canonical_solution": "def get_positive(l):\n    return [e for e in l if e>0]",
+    "test": "assert get_positive([-1,-2,4,5,6])==[4,5,6]",
+    "description": "Correct positive filter (control)",
+    "function_length": 2,
+    "complexity": 1
+  },
+  {
+    "task_id": "HE_021",
+    "bug_category": "type_error",
+    "prompt": "def filter_integers(values):\n    return [x for x in values if type(x)==int]",
+    "canonical_solution": "def filter_integers(values):\n    return [x for x in values if isinstance(x,int)]",
+    "test": "assert filter_integers(['',3.14,5,-10,{},[]])==[5,-10]",
+    "description": "type()==int fails for bool subclass; use isinstance",
+    "function_length": 2,
+    "complexity": 1
+  },
+  {
+    "task_id": "HE_022",
+    "bug_category": "type_error",
+    "prompt": "def is_prime(n):\n    if n<2: return False\n    for k in range(2, int(n**0.5)):\n        if n%k==0: return False\n    return True",
+    "canonical_solution": "def is_prime(n):\n    if n<2: return False\n    for k in range(2, int(n**0.5)+1):\n        if n%k==0: return False\n    return True",
+    "test": "assert not is_prime(6)\nassert is_prime(101)\nassert not is_prime(11*11)",
+    "description": "Square root bound exclusive -- misses perfect squares",
+    "function_length": 4,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_023",
+    "bug_category": "type_error",
+    "prompt": "def rescale_to_unit(numbers):\n    min_number=min(numbers)\n    max_number=max(numbers)\n    return [(x-min_number)/(max_number-min_number) for x in numbers]",
+    "canonical_solution": "def rescale_to_unit(numbers):\n    min_number=min(numbers)\n    max_number=max(numbers)\n    return [(x-min_number)/(max_number-min_number) for x in numbers]",
+    "test": "assert rescale_to_unit([2.0,49.9])==[0.0,1.0]",
+    "description": "Correct min-max rescaling (control)",
+    "function_length": 4,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_024",
+    "bug_category": "type_error",
+    "prompt": "def fruit_distribution(s, n):\n    lis=list(map(int, s.split(' ')))\n    return n-sum(lis)",
+    "canonical_solution": "def fruit_distribution(s, n):\n    lis=list(map(int,[c for c in s.split(' ') if c.isdigit()]))\n    return n-sum(lis)",
+    "test": "assert fruit_distribution('5 apples and 6 oranges',19)==8\nassert fruit_distribution('0 apples and 1 oranges',3)==2",
+    "description": "Splitting on space then int() raises ValueError on word tokens",
+    "function_length": 3,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_025",
+    "bug_category": "type_error",
+    "prompt": "def find_closest_elements(numbers):\n    closest_pair=None\n    distance=None\n    for idx,elem in enumerate(numbers):\n        for idx2,elem2 in enumerate(numbers):\n            if idx!=idx2:\n                if distance is None or abs(elem-elem2)<distance:\n                    distance=abs(elem-elem2)\n                    closest_pair=tuple(sorted([elem,elem2]))\n    return closest_pair",
+    "canonical_solution": "def find_closest_elements(numbers):\n    closest_pair=None\n    distance=None\n    for idx,elem in enumerate(numbers):\n        for idx2,elem2 in enumerate(numbers):\n            if idx!=idx2:\n                if distance is None or abs(elem-elem2)<distance:\n                    distance=abs(elem-elem2)\n                    closest_pair=tuple(sorted([elem,elem2]))\n    return closest_pair",
+    "test": "assert find_closest_elements([1.0,2.0,3.0,4.0,5.0,2.2])==(2.0,2.2)",
+    "description": "Correct closest pair with float comparison (control)",
+    "function_length": 8,
+    "complexity": 4
+  },
+  {
+    "task_id": "HE_026",
+    "bug_category": "type_error",
+    "prompt": "def factorize(n):\n    import math\n    fact=[]\n    i=2\n    while i<=int(math.sqrt(n)+1):\n        if n%i==0:\n            fact.append(i)\n            n//=i\n        else:\n            i+=1\n    if n>1: fact.append(n)\n    return fact",
+    "canonical_solution": "def factorize(n):\n    import math\n    fact=[]\n    i=2\n    while i<=int(math.sqrt(n)+1):\n        if n%i==0:\n            fact.append(i)\n            n//=i\n        else:\n            i+=1\n    if n>1: fact.append(n)\n    return fact",
+    "test": "assert factorize(8)==[2,2,2]\nassert factorize(25)==[5,5]\nassert factorize(70)==[2,5,7]",
+    "description": "Correct prime factorisation (control)",
+    "function_length": 10,
+    "complexity": 3
+  },
+  {
+    "task_id": "HE_027",
+    "bug_category": "type_error",
+    "prompt": "def flip_case(string):\n    return string.lower()",
+    "canonical_solution": "def flip_case(string):\n    return string.swapcase()",
+    "test": "assert flip_case('Hello')=='hELLO'",
+    "description": "lower() instead of swapcase() loses uppercase chars",
+    "function_length": 2,
+    "complexity": 1
+  },
+  {
+    "task_id": "HE_028",
+    "bug_category": "type_error",
+    "prompt": "def strlen(string):\n    return len(string)",
+    "canonical_solution": "def strlen(string):\n    return len(string)",
+    "test": "assert strlen('')==0\nassert strlen('abc')==3",
+    "description": "Correct string length (control)",
+    "function_length": 2,
+    "complexity": 1
+  },
+  {
+    "task_id": "HE_029",
+    "bug_category": "type_error",
+    "prompt": "def concatenate(strings):\n    return ''.join(strings)",
+    "canonical_solution": "def concatenate(strings):\n    return ''.join(strings)",
+    "test": "assert concatenate([])==''\nassert concatenate(['a','b','c'])=='abc'",
+    "description": "Correct string join (control)",
+    "function_length": 2,
+    "complexity": 1
+  },
+  {
+    "task_id": "HE_030",
+    "bug_category": "type_error",
+    "prompt": "def filter_by_substring(strings, substring):\n    return [x for x in strings if substring in x]",
+    "canonical_solution": "def filter_by_substring(strings, substring):\n    return [x for x in strings if substring in x]",
+    "test": "assert filter_by_substring(['abc','bacd','cde','array'],'a')==['abc','bacd','array']",
+    "description": "Correct substring filter (control)",
+    "function_length": 2,
+    "complexity": 1
+  },
+  {
+    "task_id": "HE_031",
+    "bug_category": "type_error",
+    "prompt": "def sort_numbers(numbers):\n    value_map={'zero':0,'one':1,'two':2,'three':3,'four':4,'five':5,'six':6,'seven':7,'eight':8,'nine':9}\n    return ' '.join(sorted([x for x in numbers.split() if x in value_map],key=lambda x:value_map[x]))",
+    "canonical_solution": "def sort_numbers(numbers):\n    value_map={'zero':0,'one':1,'two':2,'three':3,'four':4,'five':5,'six':6,'seven':7,'eight':8,'nine':9}\n    return ' '.join(sorted([x for x in numbers.split() if x in value_map],key=lambda x:value_map[x]))",
+    "test": "assert sort_numbers('three one five')=='one three five'",
+    "description": "Correct number word sorting (control)",
+    "function_length": 3,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_032",
+    "bug_category": "type_error",
+    "prompt": "def parse_nested_parens(paren_string):\n    def parse_paren_group(s):\n        depth=0\n        max_depth=0\n        for c in s:\n            if c=='(': depth+=1; max_depth=max(depth,max_depth)\n            elif c==')': depth-=1\n        return max_depth\n    return [parse_paren_group(x) for x in paren_string.split()]",
+    "canonical_solution": "def parse_nested_parens(paren_string):\n    def parse_paren_group(s):\n        depth=0\n        max_depth=0\n        for c in s:\n            if c=='(': depth+=1; max_depth=max(depth,max_depth)\n            elif c==')': depth-=1\n        return max_depth\n    return [parse_paren_group(x) for x in paren_string.split()]",
+    "test": "assert parse_nested_parens('(()()) ((())) () ((()()()))')==[2,3,1,3]",
+    "description": "Correct nested paren depth (control)",
+    "function_length": 8,
+    "complexity": 3
+  },
+  {
+    "task_id": "HE_033",
+    "bug_category": "type_error",
+    "prompt": "def fizz_buzz(n):\n    ns=[]\n    for i in range(n):\n        if i%11==0 or i%13==0: ns.append(i)\n    s=''.join(list(map(str,ns)))\n    ans=0\n    for c in s: ans+=(c=='7')\n    return ans",
+    "canonical_solution": "def fizz_buzz(n):\n    ns=[]\n    for i in range(n):\n        if i%11==0 or i%13==0: ns.append(i)\n    s=''.join(list(map(str,ns)))\n    ans=0\n    for c in s: ans+=(c=='7')\n    return ans",
+    "test": "assert fizz_buzz(50)==0\nassert fizz_buzz(78)==2\nassert fizz_buzz(79)==3",
+    "description": "Correct digit-7 counter in divisible numbers (control)",
+    "function_length": 7,
+    "complexity": 3
+  },
+  {
+    "task_id": "HE_034",
+    "bug_category": "type_error",
+    "prompt": "def same_chars(s0, s1):\n    return set(s0)==set(s1)",
+    "canonical_solution": "def same_chars(s0, s1):\n    return set(s0)==set(s1)",
+    "test": "assert same_chars('eabcdzzzz','dddzzzzzzzddeddabc')==True\nassert same_chars('dddddddabc','abce')==False",
+    "description": "Correct same character set check (control)",
+    "function_length": 2,
+    "complexity": 1
+  },
+  {
+    "task_id": "HE_035",
+    "bug_category": "type_error",
+    "prompt": "def below_threshold(l, t):\n    return all(e<t for e in l)",
+    "canonical_solution": "def below_threshold(l, t):\n    return all(e<t for e in l)",
+    "test": "assert below_threshold([1,2,4,10],100)==True\nassert below_threshold([1,20,4,10],5)==False",
+    "description": "Correct threshold check (control)",
+    "function_length": 2,
+    "complexity": 1
+  },
+  {
+    "task_id": "HE_036",
+    "bug_category": "type_error",
+    "prompt": "def prime_fib(n):\n    import math\n    def is_prime(p):\n        if p<2: return False\n        for k in range(2,min(int(math.sqrt(p)),1000)):\n            if p%k==0: return False\n        return True\n    f=[0,1]\n    while True:\n        f.append(f[-1]+f[-2])\n        if is_prime(f[-1]):\n            n-=1\n            if n==0: return f[-1]",
+    "canonical_solution": "def prime_fib(n):\n    import math\n    def is_prime(p):\n        if p<2: return False\n        for k in range(2,min(int(math.sqrt(p))+1,1000)):\n            if p%k==0: return False\n        return True\n    f=[0,1]\n    while True:\n        f.append(f[-1]+f[-2])\n        if is_prime(f[-1]):\n            n-=1\n            if n==0: return f[-1]",
+    "test": "assert prime_fib(1)==2\nassert prime_fib(2)==3\nassert prime_fib(3)==5",
+    "description": "is_prime range excludes sqrt -- misses prime check boundary",
+    "function_length": 10,
+    "complexity": 4
+  },
+  {
+    "task_id": "HE_037",
+    "bug_category": "type_error",
+    "prompt": "def sort_even(l):\n    evens=l[::2]\n    odds=l[1::2]\n    evens.sort()\n    ans=[]\n    for e,o in zip(evens,odds):\n        ans.extend([e,o])\n    if len(evens)>len(odds): ans.append(evens[-1])\n    return ans",
+    "canonical_solution": "def sort_even(l):\n    evens=l[::2]\n    odds=l[1::2]\n    evens.sort()\n    ans=[]\n    for e,o in zip(evens,odds):\n        ans.extend([e,o])\n    if len(evens)>len(odds): ans.append(evens[-1])\n    return ans",
+    "test": "assert sort_even([1,2,3])==[1,2,3]\nassert sort_even([5,6,3,4])==[3,6,5,4]",
+    "description": "Correct even-index element sorting (control)",
+    "function_length": 8,
+    "complexity": 3
+  },
+  {
+    "task_id": "HE_038",
+    "bug_category": "type_error",
+    "prompt": "def has_close_elements2(numbers, threshold):\n    for i in range(len(numbers)):\n        for j in range(i+1,len(numbers)):\n            if abs(numbers[i]-numbers[j])<=threshold:\n                return True\n    return False",
+    "canonical_solution": "def has_close_elements2(numbers, threshold):\n    for i in range(len(numbers)):\n        for j in range(i+1,len(numbers)):\n            if abs(numbers[i]-numbers[j])<threshold:\n                return True\n    return False",
+    "test": "assert has_close_elements2([1.0,2.0,3.9,4.0,5.0,2.2],0.3)==True\nassert has_close_elements2([1.0,2.0,3.9,4.0,5.0,2.2],0.05)==False",
+    "description": "<= instead of < -- boundary value included when it should not be",
+    "function_length": 6,
+    "complexity": 3
+  },
+  {
+    "task_id": "HE_039",
+    "bug_category": "type_error",
+    "prompt": "def incr_list(l):\n    return [e+1 for e in l]",
+    "canonical_solution": "def incr_list(l):\n    return [e+1 for e in l]",
+    "test": "assert incr_list([1,2,3])==[2,3,4]",
+    "description": "Correct list increment (control)",
+    "function_length": 2,
+    "complexity": 1
+  },
+  {
+    "task_id": "HE_040",
+    "bug_category": "type_error",
+    "prompt": "def pairs_sum_to_zero(l):\n    for i,l1 in enumerate(l):\n        for j,l2 in enumerate(l):\n            if i!=j and l1+l2==0: return True\n    return False",
+    "canonical_solution": "def pairs_sum_to_zero(l):\n    for i,l1 in enumerate(l):\n        for j,l2 in enumerate(l):\n            if i!=j and l1+l2==0: return True\n    return False",
+    "test": "assert pairs_sum_to_zero([1,3,-2,1])==False\nassert pairs_sum_to_zero([-1,0,1])==True",
+    "description": "Correct two-sum zero check (control)",
+    "function_length": 4,
+    "complexity": 3
+  },
+  {
+    "task_id": "HE_041",
+    "bug_category": "scope_error",
+    "prompt": "counter=0\ndef triples_sum_to_zero(l):\n    for i in range(len(l)):\n        for j in range(i+1,len(l)):\n            for k in range(j+1,len(l)):\n                counter+=1\n                if l[i]+l[j]+l[k]==0: return True\n    return False",
+    "canonical_solution": "def triples_sum_to_zero(l):\n    for i in range(len(l)):\n        for j in range(i+1,len(l)):\n            for k in range(j+1,len(l)):\n                if l[i]+l[j]+l[k]==0: return True\n    return False",
+    "test": "assert triples_sum_to_zero([1,3,5,0])==False\nassert triples_sum_to_zero([-3,9,-1,3,2,30])==True",
+    "description": "Modifying global counter inside function without global declaration raises UnboundLocalError",
+    "function_length": 6,
+    "complexity": 4
+  },
+  {
+    "task_id": "HE_042",
+    "bug_category": "scope_error",
+    "prompt": "def encode_shift(s):\n    return ''.join([chr(((ord(ch)+5-ord('a'))%26)+ord('a')) if ch.isalpha() else ch for ch in s])\ndef decode_shift(s):\n    return ''.join([chr(((ord(ch)+5-ord('a'))%26)+ord('a')) if ch.isalpha() else ch for ch in s])",
+    "canonical_solution": "def encode_shift(s):\n    return ''.join([chr(((ord(ch)+5-ord('a'))%26)+ord('a')) if ch.isalpha() else ch for ch in s])\ndef decode_shift(s):\n    return ''.join([chr(((ord(ch)-5-ord('a'))%26)+ord('a')) if ch.isalpha() else ch for ch in s])",
+    "test": "from random import randint,choice\nfrom string import ascii_lowercase\nfor _ in range(100):\n    s=''.join(choice(ascii_lowercase) for _ in range(randint(10,20)))\n    assert decode_shift(encode_shift(s))==s",
+    "description": "decode_shift copies encode_shift body (+5) instead of reversing (-5)",
+    "function_length": 4,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_043",
+    "bug_category": "scope_error",
+    "prompt": "def median(l):\n    l=sorted(l)\n    if len(l)%2==1: return l[len(l)//2]\n    else: return (l[len(l)//2-1]+l[len(l)//2])/2.0",
+    "canonical_solution": "def median(l):\n    l=sorted(l)\n    if len(l)%2==1: return l[len(l)//2]\n    else: return (l[len(l)//2-1]+l[len(l)//2])/2.0",
+    "test": "assert median([3,1,2,4,5])==3\nassert abs(median([-10,4,6,1000,10,20])-15.0)<1e-6",
+    "description": "Correct median for odd and even lengths (control)",
+    "function_length": 4,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_044",
+    "bug_category": "scope_error",
+    "prompt": "SHARED_RESULT=[]\ndef remove_vowels(text):\n    SHARED_RESULT.clear()\n    for s in text:\n        if s.lower() not in ['a','e','i','o','u']:\n            SHARED_RESULT.append(s)\n    return ''.join(SHARED_RESULT)",
+    "canonical_solution": "def remove_vowels(text):\n    return ''.join([s for s in text if s.lower() not in ['a','e','i','o','u']])",
+    "test": "assert remove_vowels('')==''\nassert remove_vowels('abcdef\\nghijklm')=='bcdf\\nghjklm'",
+    "description": "Using a shared global list as accumulator is not thread-safe and leaks state across calls",
+    "function_length": 5,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_045",
+    "bug_category": "scope_error",
+    "prompt": "def change_base(x, base):\n    ret=''\n    while x>0:\n        ret=str(x%base)+ret\n        x//=base\n    return ret",
+    "canonical_solution": "def change_base(x, base):\n    ret=''\n    while x>0:\n        ret=str(x%base)+ret\n        x//=base\n    return ret",
+    "test": "assert change_base(8,3)=='22'\nassert change_base(9,3)=='100'",
+    "description": "Correct base conversion (control)",
+    "function_length": 5,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_046",
+    "bug_category": "scope_error",
+    "prompt": "def fib4(n):\n    results=[0,0,2,0]\n    if n<4: return results[n]\n    for _ in range(4,n+1):\n        results.append(results[-1]+results[-2]+results[-3]+results[-4])\n        results.pop(0)\n    return results[-1]",
+    "canonical_solution": "def fib4(n):\n    results=[0,0,2,0]\n    if n<4: return results[n]\n    for _ in range(4,n+1):\n        results.append(results[-1]+results[-2]+results[-3]+results[-4])\n        results.pop(0)\n    return results[-1]",
+    "test": "assert fib4(5)==4\nassert fib4(8)==28",
+    "description": "Correct Fib4 sliding window (control)",
+    "function_length": 6,
+    "complexity": 3
+  },
+  {
+    "task_id": "HE_047",
+    "bug_category": "scope_error",
+    "prompt": "def add(x, y):\n    result=x+y\ndef get_result():\n    return result",
+    "canonical_solution": "def add(x, y):\n    return x+y",
+    "test": "assert add(2,3)==5\nassert add(5,7)==12",
+    "description": "Result assigned locally then accessed from outer scope without return",
+    "function_length": 3,
+    "complexity": 1
+  },
+  {
+    "task_id": "HE_048",
+    "bug_category": "scope_error",
+    "prompt": "def pluck(arr):\n    if not arr: return []\n    evens=[[x,i] for i,x in enumerate(arr) if x%2==0]\n    if evens: return min(evens)\n    return []",
+    "canonical_solution": "def pluck(arr):\n    if not arr: return []\n    evens=[[x,i] for i,x in enumerate(arr) if x%2==0]\n    if evens: return min(evens)\n    return []",
+    "test": "assert pluck([4,2,3])==[2,1]\nassert pluck([])==[]\nassert pluck([5,0,3,0,4,2])==[0,1]",
+    "description": "Correct smallest-even pluck with index (control)",
+    "function_length": 5,
+    "complexity": 3
+  },
+  {
+    "task_id": "HE_049",
+    "bug_category": "scope_error",
+    "prompt": "def search(lst):\n    frq=[0]*(max(lst)+1)\n    for i in lst: frq[i]+=1\n    ans=-1\n    for i in range(1,len(frq)):\n        if frq[i]>=i: ans=i\n    return ans",
+    "canonical_solution": "def search(lst):\n    frq=[0]*(max(lst)+1)\n    for i in lst: frq[i]+=1\n    ans=-1\n    for i in range(1,len(frq)):\n        if frq[i]>=i: ans=i\n    return ans",
+    "test": "assert search([4,1,2,2,3,1])==2\nassert search([1,2,2,3,3,3,4,4,4])==3",
+    "description": "Correct frequency-meets-value search (control)",
+    "function_length": 6,
+    "complexity": 3
+  },
+  {
+    "task_id": "HE_050",
+    "bug_category": "scope_error",
+    "prompt": "cache={}\ndef fib_cached(n):\n    if n in cache: return cache[n]\n    if n<=1: return n\n    result=fib_cached(n-1)+fib_cached(n-2)\n    cache[n]=result\n    return result\ncache.clear()",
+    "canonical_solution": "def fib_cached(n, cache={}):\n    if n in cache: return cache[n]\n    if n<=1: return n\n    result=fib_cached(n-1)+fib_cached(n-2)\n    cache[n]=result\n    return result",
+    "test": "assert fib_cached(10)==55\nassert fib_cached(1)==1",
+    "description": "Global cache cleared after function definition breaks memoisation on re-import",
+    "function_length": 5,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_051",
+    "bug_category": "scope_error",
+    "prompt": "def largest_prime_factor(n):\n    largest=1\n    i=2\n    while i*i<=n:\n        while n%i==0:\n            largest=i\n            n//=i\n        i+=1\n    if n>1: largest=n\n    return largest",
+    "canonical_solution": "def largest_prime_factor(n):\n    largest=1\n    i=2\n    while i*i<=n:\n        while n%i==0:\n            largest=i\n            n//=i\n        i+=1\n    if n>1: largest=n\n    return largest",
+    "test": "assert largest_prime_factor(13195)==29\nassert largest_prime_factor(2048)==2",
+    "description": "Correct largest prime factor (control)",
+    "function_length": 8,
+    "complexity": 3
+  },
+  {
+    "task_id": "HE_052",
+    "bug_category": "scope_error",
+    "prompt": "multiplier=10\ndef scale_list(lst):\n    def apply(x):\n        return x*multiplier\n    multiplier=20\n    return [apply(x) for x in lst]",
+    "canonical_solution": "def scale_list(lst, multiplier=10):\n    return [x*multiplier for x in lst]",
+    "test": "assert scale_list([1,2,3])==[10,20,30]",
+    "description": "Local multiplier reassignment before use in nested function triggers UnboundLocalError",
+    "function_length": 5,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_053",
+    "bug_category": "scope_error",
+    "prompt": "def correct_bracketing(brackets):\n    depth=0\n    for b in brackets:\n        if b=='<': depth+=1\n        else: depth-=1\n        if depth<0: return False\n    return depth==0",
+    "canonical_solution": "def correct_bracketing(brackets):\n    depth=0\n    for b in brackets:\n        if b=='<': depth+=1\n        else: depth-=1\n        if depth<0: return False\n    return depth==0",
+    "test": "assert correct_bracketing('<>')==True\nassert correct_bracketing('<<><>>')==True\nassert correct_bracketing('><<>')==False",
+    "description": "Correct angle-bracket balancing (control)",
+    "function_length": 7,
+    "complexity": 3
+  },
+  {
+    "task_id": "HE_054",
+    "bug_category": "scope_error",
+    "prompt": "def monotonic(l):\n    if l==sorted(l) or l==sorted(l,reverse=True): return True\n    return False",
+    "canonical_solution": "def monotonic(l):\n    if l==sorted(l) or l==sorted(l,reverse=True): return True\n    return False",
+    "test": "assert monotonic([1,2,4,20])==True\nassert monotonic([1,20,4,10])==False",
+    "description": "Correct monotonicity check (control)",
+    "function_length": 3,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_055",
+    "bug_category": "scope_error",
+    "prompt": "TOTAL=0\ndef accumulate(values):\n    for v in values:\n        TOTAL+=v\n    return TOTAL",
+    "canonical_solution": "def accumulate(values):\n    total=0\n    for v in values:\n        total+=v\n    return total",
+    "test": "assert accumulate([1,2,3])==6\nassert accumulate([10,20])==30",
+    "description": "Modifying global TOTAL without global declaration raises UnboundLocalError",
+    "function_length": 4,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_056",
+    "bug_category": "scope_error",
+    "prompt": "def total_match(lst1, lst2):\n    l1=sum(len(s) for s in lst1)\n    l2=sum(len(s) for s in lst2)\n    if l1<=l2: return lst1\n    else: return lst2",
+    "canonical_solution": "def total_match(lst1, lst2):\n    l1=sum(len(s) for s in lst1)\n    l2=sum(len(s) for s in lst2)\n    if l1<=l2: return lst1\n    else: return lst2",
+    "test": "assert total_match([],[]==[]\nassert total_match(['hi','admin'],['hi','hi'])==['hi','hi']",
+    "description": "Correct total match (control)",
+    "function_length": 5,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_057",
+    "bug_category": "scope_error",
+    "prompt": "def will_it_fly(q, w):\n    if sum(q)>w: return False\n    i,j=0,len(q)-1\n    while i<j:\n        if q[i]!=q[j]: return False\n        i+=1; j-=1\n    return True",
+    "canonical_solution": "def will_it_fly(q, w):\n    if sum(q)>w: return False\n    i,j=0,len(q)-1\n    while i<j:\n        if q[i]!=q[j]: return False\n        i+=1; j-=1\n    return True",
+    "test": "assert will_it_fly([3,2,3],9)==True\nassert will_it_fly([1,2],5)==False",
+    "description": "Correct palindrome + weight check (control)",
+    "function_length": 6,
+    "complexity": 3
+  },
+  {
+    "task_id": "HE_058",
+    "bug_category": "scope_error",
+    "prompt": "def smallest_change(arr):\n    ans=0\n    for i in range(len(arr)//2):\n        if arr[i]!=arr[len(arr)-i-1]: ans+=1\n    return ans",
+    "canonical_solution": "def smallest_change(arr):\n    ans=0\n    for i in range(len(arr)//2):\n        if arr[i]!=arr[len(arr)-i-1]: ans+=1\n    return ans",
+    "test": "assert smallest_change([1,2,3,5,4,7,9,6])==4\nassert smallest_change([1,2,3,2,1])==0",
+    "description": "Correct min changes to palindrome (control)",
+    "function_length": 4,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_059",
+    "bug_category": "scope_error",
+    "prompt": "def common(l1, l2):\n    ret=set()\n    for e1 in l1:\n        for e2 in l2:\n            if e1==e2: ret.add(e1)\n    return sorted(list(ret))",
+    "canonical_solution": "def common(l1, l2):\n    ret=set()\n    for e1 in l1:\n        for e2 in l2:\n            if e1==e2: ret.add(e1)\n    return sorted(list(ret))",
+    "test": "assert common([1,4,3,34,653,2,5],[5,7,1,5,9,653,121])==[1,5,653]",
+    "description": "Correct set intersection with sort (control)",
+    "function_length": 5,
+    "complexity": 3
+  },
+  {
+    "task_id": "HE_060",
+    "bug_category": "scope_error",
+    "prompt": "_cache=[None]*1000\ndef is_multiply_prime(a):\n    def is_prime(n):\n        if _cache[n] is not None: return _cache[n]\n        for j in range(2,n):\n            if n%j==0:\n                _cache[n]=False\n                return False\n        _cache[n]=True\n        return True\n    for i in range(2,101):\n        if not is_prime(i): continue\n        for j in range(2,101):\n            if not is_prime(j): continue\n            for k in range(2,101):\n                if not is_prime(k): continue\n                if i*j*k==a: return True\n    return False",
+    "canonical_solution": "def is_multiply_prime(a):\n    def is_prime(n):\n        for j in range(2,n):\n            if n%j==0: return False\n        return True\n    for i in range(2,101):\n        if not is_prime(i): continue\n        for j in range(2,101):\n            if not is_prime(j): continue\n            for k in range(2,101):\n                if not is_prime(k): continue\n                if i*j*k==a: return True\n    return False",
+    "test": "assert is_multiply_prime(5)==False\nassert is_multiply_prime(30)==True\nassert is_multiply_prime(8)==True",
+    "description": "Shared mutable cache across calls introduces state pollution between test runs",
+    "function_length": 12,
+    "complexity": 5
+  },
+  {
+    "task_id": "HE_061",
+    "bug_category": "logic_error",
+    "prompt": "def sum_to_n(n):\n    return n*(n-1)//2",
+    "canonical_solution": "def sum_to_n(n):\n    return n*(n+1)//2",
+    "test": "assert sum_to_n(1)==1\nassert sum_to_n(6)==21\nassert sum_to_n(11)==66",
+    "description": "Formula uses n-1 instead of n+1 in Gaussian sum",
+    "function_length": 2,
+    "complexity": 1
+  },
+  {
+    "task_id": "HE_062",
+    "bug_category": "logic_error",
+    "prompt": "def correct_bracketing_paren(brackets):\n    depth=0\n    for b in brackets:\n        if b=='(': depth+=1\n        else: depth-=1\n        if depth<0: return True\n    return depth!=0",
+    "canonical_solution": "def correct_bracketing_paren(brackets):\n    depth=0\n    for b in brackets:\n        if b=='(': depth+=1\n        else: depth-=1\n        if depth<0: return False\n    return depth==0",
+    "test": "assert correct_bracketing_paren('()')==True\nassert correct_bracketing_paren('(()())')==True\nassert correct_bracketing_paren('(')==False",
+    "description": "Return values inverted -- returns True on imbalance",
+    "function_length": 7,
+    "complexity": 3
+  },
+  {
+    "task_id": "HE_063",
+    "bug_category": "logic_error",
+    "prompt": "def will_it_fly_v2(q, w):\n    if sum(q)<w: return False\n    i,j=0,len(q)-1\n    while i<j:\n        if q[i]!=q[j]: return False\n        i+=1; j-=1\n    return True",
+    "canonical_solution": "def will_it_fly_v2(q, w):\n    if sum(q)>w: return False\n    i,j=0,len(q)-1\n    while i<j:\n        if q[i]!=q[j]: return False\n        i+=1; j-=1\n    return True",
+    "test": "assert will_it_fly_v2([3,2,3],9)==True\nassert will_it_fly_v2([3,2,3],1)==False",
+    "description": "Weight check inverted: < instead of > allows overweight objects to fly",
+    "function_length": 6,
+    "complexity": 3
+  },
+  {
+    "task_id": "HE_064",
+    "bug_category": "logic_error",
+    "prompt": "def vowels_count(s):\n    vowels='aeiou'\n    n_vowels=sum(c in vowels for c in s.lower())\n    if s[-1]=='y' or s[-1]=='Y': n_vowels+=1\n    return n_vowels",
+    "canonical_solution": "def vowels_count(s):\n    vowels='aeiouAEIOU'\n    n_vowels=sum(c in vowels for c in s)\n    if s[-1]=='y' or s[-1]=='Y': n_vowels+=1\n    return n_vowels",
+    "test": "assert vowels_count('abcde')==2\nassert vowels_count('ACEDY')==3",
+    "description": "Lowercasing before check is correct but set is lowercase-only -- both approaches work; control",
+    "function_length": 4,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_065",
+    "bug_category": "logic_error",
+    "prompt": "def circular_shift(x, shift):\n    s=str(x)\n    if shift>len(s): return s[::-1]\n    return s[:shift]+s[shift:]",
+    "canonical_solution": "def circular_shift(x, shift):\n    s=str(x)\n    if shift>len(s): return s[::-1]\n    return s[len(s)-shift:]+s[:len(s)-shift]",
+    "test": "assert circular_shift(12,1)=='21'\nassert circular_shift(12,2)=='12'",
+    "description": "Slicing does not rotate -- just returns original string unchanged",
+    "function_length": 4,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_066",
+    "bug_category": "logic_error",
+    "prompt": "def digitSum(s):\n    if s=='': return 0\n    return sum(ord(c) for c in s if c.islower())",
+    "canonical_solution": "def digitSum(s):\n    if s=='': return 0\n    return sum(ord(c) for c in s if c.isupper())",
+    "test": "assert digitSum('')==0\nassert digitSum('abAB')==131\nassert digitSum('abcCd')==67",
+    "description": "islower() instead of isupper() sums wrong character class",
+    "function_length": 3,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_067",
+    "bug_category": "logic_error",
+    "prompt": "def strange_sort_list(lst):\n    res,switch,_lst=[],True,sorted(lst)\n    while _lst:\n        res.append(_lst.pop(0 if switch else -1))\n        switch=not switch\n    return res",
+    "canonical_solution": "def strange_sort_list(lst):\n    res,switch,_lst=[],True,sorted(lst)\n    while _lst:\n        res.append(_lst.pop(0 if switch else -1))\n        switch=not switch\n    return res",
+    "test": "assert strange_sort_list([1,2,3,4])==[1,4,2,3]\nassert strange_sort_list([5,5,5,5])==[5,5,5,5]",
+    "description": "Correct alternating min/max sort (control)",
+    "function_length": 4,
+    "complexity": 3
+  },
+  {
+    "task_id": "HE_068",
+    "bug_category": "logic_error",
+    "prompt": "def is_prime_v2(n):\n    if n<2: return False\n    if n==2: return True\n    if n%2==0: return True\n    for i in range(3,int(n**0.5)+1,2):\n        if n%i==0: return False\n    return True",
+    "canonical_solution": "def is_prime_v2(n):\n    if n<2: return False\n    if n==2: return True\n    if n%2==0: return False\n    for i in range(3,int(n**0.5)+1,2):\n        if n%i==0: return False\n    return True",
+    "test": "assert not is_prime_v2(4)\nassert is_prime_v2(7)\nassert not is_prime_v2(9)",
+    "description": "Even number check returns True instead of False -- all even numbers classified as prime",
+    "function_length": 6,
+    "complexity": 3
+  },
+  {
+    "task_id": "HE_069",
+    "bug_category": "logic_error",
+    "prompt": "def hex_key(num):\n    primes=('2','3','5','7','B','D')\n    total=0\n    for i in range(len(num)):\n        if num[i] in primes: total+=1\n    return total",
+    "canonical_solution": "def hex_key(num):\n    primes=('2','3','5','7','B','D')\n    total=0\n    for i in range(len(num)):\n        if num[i] in primes: total+=1\n    return total",
+    "test": "assert hex_key('AB')==1\nassert hex_key('1077E')==2\nassert hex_key('ABED1A33')==4",
+    "description": "Correct hex prime digit count (control)",
+    "function_length": 5,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_070",
+    "bug_category": "logic_error",
+    "prompt": "def decimal_to_binary(decimal):\n    return 'db'+bin(decimal)[2:]+'bd'",
+    "canonical_solution": "def decimal_to_binary(decimal):\n    return 'db'+bin(decimal)[2:]+'db'",
+    "test": "assert decimal_to_binary(15)=='db1111db'\nassert decimal_to_binary(32)=='db100000db'",
+    "description": "Closing wrapper is 'bd' instead of 'db'",
+    "function_length": 2,
+    "complexity": 1
+  },
+  {
+    "task_id": "HE_071",
+    "bug_category": "logic_error",
+    "prompt": "def is_happy(s):\n    if len(s)<3: return False\n    for i in range(len(s)-2):\n        if s[i]==s[i+1] or s[i+1]==s[i+2]: return False\n    return True",
+    "canonical_solution": "def is_happy(s):\n    if len(s)<3: return False\n    for i in range(len(s)-2):\n        if s[i]==s[i+1] or s[i+1]==s[i+2]: return False\n    return True",
+    "test": "assert is_happy('a')==False\nassert is_happy('aaa')==False\nassert is_happy('adb')==True\nassert is_happy('xyy')==False",
+    "description": "Correct happy string check (control)",
+    "function_length": 5,
+    "complexity": 3
+  },
+  {
+    "task_id": "HE_072",
+    "bug_category": "logic_error",
+    "prompt": "def numerical_letter_grade(grades):\n    letter_grade=[]\n    for gpa in grades:\n        if gpa==4.0: letter_grade.append('A+')\n        elif gpa>3.7: letter_grade.append('A')\n        elif gpa>3.3: letter_grade.append('A-')\n        elif gpa>3.0: letter_grade.append('B+')\n        elif gpa>2.7: letter_grade.append('B')\n        elif gpa>2.3: letter_grade.append('B-')\n        elif gpa>2.0: letter_grade.append('C+')\n        elif gpa>1.7: letter_grade.append('C')\n        elif gpa>1.3: letter_grade.append('C-')\n        elif gpa>1.0: letter_grade.append('D+')\n        elif gpa>0.7: letter_grade.append('D')\n        elif gpa>0.0: letter_grade.append('D-')\n        else: letter_grade.append('E')\n    return letter_grade",
+    "canonical_solution": "def numerical_letter_grade(grades):\n    letter_grade=[]\n    for gpa in grades:\n        if gpa==4.0: letter_grade.append('A+')\n        elif gpa>3.7: letter_grade.append('A')\n        elif gpa>3.3: letter_grade.append('A-')\n        elif gpa>3.0: letter_grade.append('B+')\n        elif gpa>2.7: letter_grade.append('B')\n        elif gpa>2.3: letter_grade.append('B-')\n        elif gpa>2.0: letter_grade.append('C+')\n        elif gpa>1.7: letter_grade.append('C')\n        elif gpa>1.3: letter_grade.append('C-')\n        elif gpa>1.0: letter_grade.append('D+')\n        elif gpa>0.7: letter_grade.append('D')\n        elif gpa>0.0: letter_grade.append('D-')\n        else: letter_grade.append('E')\n    return letter_grade",
+    "test": "assert numerical_letter_grade([4.0,3,1.7,2,3.5])==['A+','B','C-','C','A-']",
+    "description": "Correct GPA to letter grade mapping (control)",
+    "function_length": 16,
+    "complexity": 4
+  },
+  {
+    "task_id": "HE_073",
+    "bug_category": "logic_error",
+    "prompt": "def prime_length(string):\n    l=len(string)\n    if l==0 or l==1: return False\n    for i in range(2,l):\n        if l%i==0: return True\n    return False",
+    "canonical_solution": "def prime_length(string):\n    l=len(string)\n    if l==0 or l==1: return False\n    for i in range(2,l):\n        if l%i==0: return False\n    return True",
+    "test": "assert prime_length('Hello')==True\nassert prime_length('abcd')==False\nassert prime_length('kittens')==True",
+    "description": "Return values swapped -- returns True when divisible (composite) and False otherwise",
+    "function_length": 5,
+    "complexity": 3
+  },
+  {
+    "task_id": "HE_074",
+    "bug_category": "logic_error",
+    "prompt": "def starts_one_ends(n):\n    if n==1: return 1\n    return 18*10**(n-1)",
+    "canonical_solution": "def starts_one_ends(n):\n    if n==1: return 1\n    return 18*10**(n-2)",
+    "test": "assert starts_one_ends(1)==1\nassert starts_one_ends(2)==18\nassert starts_one_ends(3)==180",
+    "description": "Exponent is n-1 instead of n-2 -- off by factor of 10",
+    "function_length": 3,
+    "complexity": 1
+  },
+  {
+    "task_id": "HE_075",
+    "bug_category": "logic_error",
+    "prompt": "def solve(N):\n    return str(sum(int(c) for c in bin(N)[2:]))",
+    "canonical_solution": "def solve(N):\n    return bin(sum(int(c) for c in str(N)))[2:]",
+    "test": "assert solve(1000)==bin(1)[2:]\nassert solve(150)==bin(6)[2:]\nassert solve(147)==bin(12)[2:]",
+    "description": "Sums bits of binary representation instead of converting digit sum to binary",
+    "function_length": 2,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_076",
+    "bug_category": "logic_error",
+    "prompt": "def add_v2(lst):\n    return sum([lst[i] for i in range(1,len(lst),2) if lst[i]%2==1])",
+    "canonical_solution": "def add_v2(lst):\n    return sum([lst[i] for i in range(1,len(lst),2) if lst[i]%2==0])",
+    "test": "assert add_v2([4,2,6,7])==2",
+    "description": "Odd index filter selects odd numbers instead of even numbers",
+    "function_length": 2,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_077",
+    "bug_category": "logic_error",
+    "prompt": "def anti_shuffle(s):\n    return ' '.join([''.join(sorted(list(i),reverse=True)) for i in s.split(' ')])",
+    "canonical_solution": "def anti_shuffle(s):\n    return ' '.join([''.join(sorted(list(i))) for i in s.split(' ')])",
+    "test": "assert anti_shuffle('Hi')==anti_shuffle('Hi')\nassert anti_shuffle('hello')==anti_shuffle('hello')",
+    "description": "reverse=True sorts descending instead of ascending",
+    "function_length": 2,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_078",
+    "bug_category": "logic_error",
+    "prompt": "def get_row(lst, x):\n    coords=[]\n    for i in range(len(lst)):\n        for j in range(len(lst[i])):\n            if lst[i][j]==x:\n                coords.append((i,j))\n    return sorted(coords,key=lambda c:(c[0],-c[1]))",
+    "canonical_solution": "def get_row(lst, x):\n    coords=[]\n    for i in range(len(lst)):\n        for j in range(len(lst[i])):\n            if lst[i][j]==x:\n                coords.append((i,j))\n    return sorted(coords,key=lambda c:(c[0],-c[1]))",
+    "test": "assert get_row([[1,2,3],[2,4,5],[1]],1)==[(0,0),(2,0)]\nassert get_row([[],[1],[1,2,3]],3)==[(2,2)]",
+    "description": "Correct row search with sort (control)",
+    "function_length": 7,
+    "complexity": 4
+  },
+  {
+    "task_id": "HE_079",
+    "bug_category": "logic_error",
+    "prompt": "def sort_array(array):\n    return [] if len(array)==0 else sorted(array,reverse=bin(array[0]+array[-1]).count('1')%2==0)",
+    "canonical_solution": "def sort_array(array):\n    return [] if len(array)==0 else sorted(array,reverse=bin(array[0]+array[-1]).count('1')%2==0)",
+    "test": "assert sort_array([1])==[1]\nassert sort_array([5])==[5]\nassert sort_array([2,4,3,0,1,5])==[0,1,2,3,4,5]",
+    "description": "Correct conditional sort direction (control)",
+    "function_length": 2,
+    "complexity": 2
+  },
+  {
+    "task_id": "HE_080",
+    "bug_category": "logic_error",
+    "prompt": "def encrypt(s):\n    d='abcdefghijklmnopqrstuvwxyz'\n    out=''\n    for c in s:\n        if c in d:\n            out+=d[(d.index(c)+2*2)%26]\n        else:\n            out+=c\n    return out",
+    "canonical_solution": "def encrypt(s):\n    d='abcdefghijklmnopqrstuvwxyz'\n    out=''\n    for c in s:\n        if c in d:\n            out+=d[(d.index(c)+2*2)%26]\n        else:\n            out+=c\n    return out",
+    "test": "assert encrypt('hi')=='lm'\nassert encrypt('asdfghjkl')=='ewhjklnop'",
+    "description": "Correct 4-shift Caesar encrypt (control)",
+    "function_length": 8,
+    "complexity": 3
+  }
+]
