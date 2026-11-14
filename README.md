@@ -1,8 +1,7 @@
 # Reliability-Aware Episodic Memory for Self-Improving LLM Agents
 
 **Course:** Data Science — FAST-NUCES Lahore, 2026  
-**Author:** Bilal Asghar  
-**Target Venues:** EMNLP Findings / AAMAS 2027 / NeurIPS LLM Agents Workshop
+**Authors:** Bilal Asghar  Umair Maqsood M Rohan
 
 ---
 
